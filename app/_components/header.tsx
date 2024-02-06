@@ -5,6 +5,7 @@ import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Card, CardContent } from "./ui/card"
 import { Button } from "./ui/button"
 import Image from "next/image"
+import Link from "next/link";
 
 import SideMenu from "./side-menu";
 
@@ -12,7 +13,9 @@ function header() {
   return (
     <Card>
       <CardContent className="p-5 justify-between items-center flex flex-row">
-        <Image src="/logo.png" alt="FSW Barber" height={18} width={120} />
+        <Link href="/">
+          <Image src="/logo.png" alt="FSW Barber" height={18} width={120} />
+        </Link>
 
         <Sheet>
           <SheetTrigger asChild>
