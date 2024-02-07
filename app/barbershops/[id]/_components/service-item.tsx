@@ -3,6 +3,7 @@
 import { Button } from "@/app/_components/ui/button";
 import { Calendar } from "@/app/_components/ui/calendar";
 import { Card, CardContent } from "@/app/_components/ui/card";
+import BookingInfo from "@/app/_components/booking-info";
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/app/_components/ui/sheet";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -211,43 +212,16 @@ const ServiceItem = ({ service, barbershop, isAuthenticated }: ServiceItemProps)
                                     )}
 
                                     <div className="py-6 px-5 border-t border-solid border-secondary">
-                                        <Card>
-                                            <CardContent className="p-3 gap-3 flex flex-col">
-                                                <div className="flex justify-between">
-                                                    <h2 className="font-bold">{service.name}</h2>
-                                                    <h3 className="font-bold text-sm">
-                                                        {" "}
-                                                        {Intl.NumberFormat("pt-BR", {
-                                                            style: "currency",
-                                                            currency: "BRL",
-                                                        }).format(Number(service.price))}
-                                                    </h3>
-                                                </div>
-
-                                                {date && (
-                                                    <div className="flex justify-between">
-                                                        <h3 className="text-gray-400 text-sm">Data</h3>
-                                                        <h4 className="text-sm">
-                                                            {format(date, "dd 'de' MMMM", {
-                                                                locale: ptBR,
-                                                            })}
-                                                        </h4>
-                                                    </div>
-                                                )}
-
-                                                {hour && (
-                                                    <div className="flex justify-between">
-                                                        <h3 className="text-gray-400 text-sm">Horário</h3>
-                                                        <h4 className="text-sm">{hour}</h4>
-                                                    </div>
-                                                )}
-
-                                                <div className="flex justify-between">
-                                                    <h3 className="text-gray-400 text-sm">Barbearia</h3>
-                                                    <h4 className="text-sm">{barbershop.name}</h4>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
+                                        <BookingInfo
+                                            booking={{
+                                                barbershop: barbershop,
+                                                date:
+                                                    date && hour
+                                                        ? setMinutes(setHours(date, Number(hour.split(":")[0])), Number(hour.split(":")[1]))
+                                                        : undefined,
+                                                service: service,
+                                            }}
+                                        />
                                     </div>
 
                                     <SheetFooter className="px-5">
