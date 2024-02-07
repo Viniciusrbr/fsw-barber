@@ -11,7 +11,7 @@ import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
-import { format, setHours, setMinutes } from "date-fns";
+import { addDays, format, setHours, setMinutes } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { generateDayTimeList } from "../_helpers/hours";
 import { Barbershop, Booking, Service } from "@prisma/client";
@@ -167,7 +167,7 @@ const ServiceItem = ({ service, barbershop, isAuthenticated }: ServiceItemProps)
                                             selected={date}
                                             onSelect={handleDateClick}
                                             locale={ptBR}
-                                            fromDate={new Date()}
+                                            fromDate={addDays(new Date(), 1)}
                                             styles={{
                                                 head_cell: {
                                                     width: "100%",
