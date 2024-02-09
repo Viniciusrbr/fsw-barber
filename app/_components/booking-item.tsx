@@ -1,5 +1,18 @@
 "use client";
 
+import { Prisma } from "@prisma/client";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Badge } from "./ui/badge";
+import { Card, CardContent } from "./ui/card";
+import { format, isFuture } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { Sheet, SheetClose, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
+import Image from "next/image";
+import { Button } from "./ui/button";
+import { cancelBooking } from "../_actions/cancel-booking";
+import { toast } from "sonner";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -11,21 +24,6 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "./ui/alert-dialog";
-import { Sheet, SheetClose, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Card, CardContent } from "./ui/card";
-import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
-import { Loader2 } from "lucide-react";
-import { toast } from "sonner";
-
-import { useState } from "react";
-import Image from "next/image";
-import { Prisma } from "@prisma/client";
-import { format, isFuture } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { cancelBooking } from "../_actions/cancel-booking";
-import BookingInfo from "./booking-info";
 
 interface BookingItemProps {
     booking: Prisma.BookingGetPayload<{
@@ -86,13 +84,18 @@ const BookingItem = ({ booking }: BookingItemProps) => {
                                 })}
                             </p>
                             <p className="text-2xl">{format(booking.date, "dd")}</p>
-                            <p className="text-sm">{format(booking.date, "hh:mm")}</p>
+                            <time
+                                className="text-sm"
+                                title={format(booking.date, "dd 'de' MMMM 'ás' hh:mm", { locale: ptBR })}
+                                dateTime={booking.date.toISOString()}
+                            >
+                                {format(booking.date, "hh:mm")}
+                            </time>
                         </div>
                     </CardContent>
                 </Card>
             </SheetTrigger>
 
-            {/* Menu que é aberto ao clicar no Card */}
             <SheetContent className="px-0">
                 <SheetHeader className="px-5 text-left pb-6 border-b border-solid border-secondary">
                     <SheetTitle>Informações da Reserva</SheetTitle>
@@ -122,8 +125,45 @@ const BookingItem = ({ booking }: BookingItemProps) => {
                         {isBookingConfirmed ? "Confirmado" : "Finalizado"}
                     </Badge>
 
-                    {/* informações da reserva */}
-                    <BookingInfo booking={booking} />
+                    <Card>
+                        <CardContent className="p-3 gap-3 flex flex-col">
+                            <div className="flex justify-between">
+                                <h2 className="font-bold">{booking.service.name}</h2>
+                                <h3 className="font-bold text-sm">
+                                    {" "}
+                                    {Intl.NumberFormat("pt-BR", {
+                                        style: "currency",
+                                        currency: "BRL",
+                                    }).format(Number(booking.service.price))}
+                                </h3>
+                            </div>
+
+                            <div className="flex justify-between">
+                                <h3 className="text-gray-400 text-sm">Data</h3>
+                                <h4 className="text-sm">
+                                    {format(booking.date, "dd 'de' MMMM", {
+                                        locale: ptBR,
+                                    })}
+                                </h4>
+                            </div>
+
+                            <div className="flex justify-between">
+                                <h3 className="text-gray-400 text-sm">Horário</h3>
+                                <time
+                                    className="text-sm"
+                                    title={format(booking.date, "dd 'de' MMMM 'ás' hh:mm", { locale: ptBR })}
+                                    dateTime={booking.date.toISOString()}
+                                >
+                                    {format(booking.date, "hh:mm")}
+                                </time>
+                            </div>
+
+                            <div className="flex justify-between">
+                                <h3 className="text-gray-400 text-sm">Barbearia</h3>
+                                <h4 className="text-sm">{booking.barbershop.name}</h4>
+                            </div>
+                        </CardContent>
+                    </Card>
 
                     <SheetFooter className="flex-row gap-3 mt-6">
                         <SheetClose asChild>
